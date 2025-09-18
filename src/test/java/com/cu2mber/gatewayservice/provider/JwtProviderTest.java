@@ -1,9 +1,9 @@
 package com.cu2mber.gatewayservice.provider;
 
-import com.cu2mber.gatewayservice.exception.UnauthorizedException;
+import com.cu2mber.gatewayservice.common.exception.UnauthorizedException;
+import com.cu2mber.gatewayservice.common.provider.JwtProvider;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

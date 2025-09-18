@@ -1,6 +1,6 @@
-package com.cu2mber.gatewayservice.provider;
+package com.cu2mber.gatewayservice.common.provider;
 
-import com.cu2mber.gatewayservice.exception.UnauthorizedException;
+import com.cu2mber.gatewayservice.common.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

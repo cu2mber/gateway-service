@@ -1,4 +1,4 @@
-package com.cu2mber.gatewayservice.exception;
+package com.cu2mber.gatewayservice.common.exception;
 
 import lombok.Getter;
 
