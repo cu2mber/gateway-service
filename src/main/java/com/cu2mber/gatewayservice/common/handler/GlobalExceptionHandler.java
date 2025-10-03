@@ -19,15 +19,44 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 글로벌 예외 처리 핸들러 클래스.
+ * <p>
+ * Spring WebFlux 환경에서 발생하는 모든 예외를 처리하며,
+ * 공통 HTTP 예외(CommonHttpException), 인증 예외(UnauthorizedException),
+ * ResponseStatusException, 그 외 내부 서버 오류를 JSON 형태로 반환합니다.
+ * <p>
+ * 반환 JSON 구조:
+ * <pre>
+ * {
+ *   "timestamp": ISO-8601 형식 시간,
+ *   "status": HTTP 상태 코드,
+ *   "error": 상태 코드 설명,
+ *   "message": 오류 메시지,
+ *   "path": 요청 URI
+ * }
+ * </pre>
+ * 로그에는 발생한 예외와 메시지를 기록합니다.
+ */
 @Slf4j
 @Order(-1)
 @Component
 @RequiredArgsConstructor
 public class GlobalExceptionHandler implements ErrorWebExceptionHandler {
 
+    /** JSON 직렬화를 위한 ObjectMapper */
     private final ObjectMapper objectMapper;
+
+    /** 기본 서버 내부 오류 메시지 */
     private static final String ERROR_MESSAGE = "서버 내부 오류가 발생했습니다.";
 
+    /**
+     * 모든 예외를 처리하고, 적절한 HTTP 상태 코드와 JSON 응답을 반환합니다.
+     *
+     * @param exchange 현재 HTTP 요청/응답 정보
+     * @param ex       발생한 Throwable 예외
+     * @return Mono<Void> 처리 완료 시점 신호
+     */
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
 
