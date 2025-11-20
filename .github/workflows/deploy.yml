@@ -1,0 +1,20 @@
+name: CI - Build & Push Gateway Service to GHCR
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write  # GHCR 푸시용 권한
+
+env:
+  GITHUB_ACTOR: ${{ github.actor }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    uses: cu2mber/cu2mber-common-infra/.github/workflows/reusable-docker-publish.yml@main
+    with:
+      image-name: gateway-service
+      use-github-token: true  # 필요하면 true, 아니면 생략 or false
