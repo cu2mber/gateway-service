@@ -4,7 +4,7 @@ WORKDIR /app
 ARG GITHUB_ACTOR
 ARG GITHUB_TOKEN
 COPY . .
-RUN chomod +x ./mvnw
+RUN chmod +x ./mvnw
 RUN GITHUB_ACTOR=${GITHUB_ACTOR} GITHUB_TOKEN=${GITHUB_TOKEN} ./mvnw clean install -Dmaven.test.skip=true
 
 ### 2. Runtime Stage
