@@ -54,8 +54,8 @@ public class JwtAuthorizationFilter implements GatewayFilter {
     private static final List<String> WHITE_LIST = List.of(
             "/auth/issue",
             "/auth/refresh",
-            "/member/signup",
-            "/member/signin"
+            "/members/signup",
+            "/members/signin"
     );
 
     /**
