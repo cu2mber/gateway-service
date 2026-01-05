@@ -105,4 +105,15 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    /**
+     * JWT 토큰에서 Claims 정보를 추출하여 반환합니다.
+     *
+     * @param token Claims를 추출할 JWT 토큰
+     * @return Claims 토큰에 포함된 사용자 및 권한 정보
+     * @throws JwtException JWT 검증 또는 파싱 과정에서 오류가 발생한 경우
+     */
+    public Claims extractClaims(String token) {
+        return getClaims(token);
+    }
 }
