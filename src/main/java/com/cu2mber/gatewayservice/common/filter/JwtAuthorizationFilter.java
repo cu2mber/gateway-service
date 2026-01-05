@@ -1,9 +1,11 @@
 package com.cu2mber.gatewayservice.common.filter;
 
 import com.cu2mber.gatewayservice.common.provider.JwtProvider;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -68,6 +70,9 @@ public class JwtAuthorizationFilter implements GatewayFilter {
      *     <li>화이트리스트 경로인 경우 인증 없이 다음 필터로 전달</li>
      *     <li>Authorization 헤더에서 Bearer 토큰 추출</li>
      *     <li>JwtProvider를 이용해 토큰 유효성 검증</li>
+     *     <li>검증된 JWT에서 Claims(memberNo, role 등) 추출</li>
+     *     <li>추출한 정보를 X-Role, X-Member-No 헤더로 주입</li>
+     *     <li>변경된 요청을 다음 필터 또는 라우트로 전달</li>
      *     <li>검증 실패 시 401 Unauthorized 응답 반환</li>
      * </ol>
      * </p>
@@ -99,14 +104,28 @@ public class JwtAuthorizationFilter implements GatewayFilter {
         try {
             // JWT 유효성 검증
             jwtProvider.validateToken(token);
+
+            // Claims 추출
+            Claims claims = jwtProvider.extractClaims(token);
+
+            // JWT Claims에서 사용자 권한 및 식별 정보 추출
+            String role = claims.get("role", String.class);
+            Long memberNo = claims.get("memberNo", Long.class);
+
+            // 내부 서비스로 전달할 사용자 정보 헤더 주입 (Header Propagation)
+            ServerHttpRequest request = exchange.getRequest()
+                    .mutate()
+                    .header("X-Role", role)
+                    .header("X-Member-No", String.valueOf(memberNo))
+                    .build();
+
+            return chain.filter(exchange.mutate().request(request).build());
+
         } catch (Exception e) {
             // 토큰 검증 실패 시 요청 차단
             exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
-
-        // 인증 성공 시 다음 필터 또는 라우트로 요청 전달
-        return chain.filter(exchange);
     }
 
     /**

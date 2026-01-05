@@ -105,4 +105,8 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public Claims extractClaims(String token) {
+        return getClaims(token);
+    }
 }
